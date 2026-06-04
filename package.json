@@ -1,0 +1,19 @@
+{
+  "name": "longevity-game",
+  "version": "1.0.0",
+  "description": "洪荒长生 - 李长寿传",
+  "main": "index.html",
+  "scripts": {
+    "start": "npx serve .",
+    "build": "mkdir -p build && cp -r index.html src build/",
+    "cordova:init": "cordova create ios-app com.longevity.game LongevityGame",
+    "ios:assets": "bash Scripts/generate-ios-assets.sh",
+    "ios:sync": "bash Scripts/sync-ios-www.sh",
+    "ios:build": "bash Scripts/build-ios.sh",
+    "ios:device": "cd ios-app && cordova run ios --device",
+    "cordova:build": "npm run ios:build"
+  },
+  "keywords": ["game", "honghuang", "修仙", "洪荒"],
+  "author": "LongevityGame Team",
+  "license": "MIT"
+}

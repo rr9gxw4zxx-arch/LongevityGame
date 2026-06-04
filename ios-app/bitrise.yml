@@ -1,0 +1,122 @@
+format_version: "13"
+default_step_lib_source: https://github.com/bitrise-io/bitrise-steplib.git
+
+app:
+  envs:
+    - BITRISE_PROJECT_PATH: "platforms/ios/App.xcworkspace"
+    - BITRISE_SCHEME: "App"
+    - BITRISE_EXPORT_METHOD: "development"
+    - BITRISE_IOS_CODE_SIGN_IDENTITY: "iPhone Developer"
+
+workflows:
+  primary:
+    steps:
+      - activate-ssh-key@4:
+          run_if: '{{getenv "SSH_RSA_PRIVATE_KEY" | ne ""}}'
+      
+      - git-clone@6: {}
+      
+      - cache-pull@2: {}
+      
+      - npm@1:
+          inputs:
+            - command: "install"
+            - cwd: "."
+      
+      - cocoapods-install@2:
+          inputs:
+            - source: "https://cdn.cocoapods.org/"
+            - verbose: "false"
+            - cwd: "platforms/ios"
+      
+      - xcode-build-for-test@1:
+          inputs:
+            - project_path: "$BITRISE_PROJECT_PATH"
+            - scheme: "$BITRISE_SCHEME"
+            - configuration: "Debug"
+            - clean: "true"
+      
+      - xcode-archive@4:
+          inputs:
+            - project_path: "$BITRISE_PROJECT_PATH"
+            - scheme: "$BITRISE_SCHEME"
+            - configuration: "Release"
+            - archive_path: "$BITRISE_DEPLOY_DIR/App.xcarchive"
+            - export_options_plist_content: |
+                <?xml version="1.0" encoding="UTF-8"?>
+                <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+                <plist version="1.0">
+                <dict>
+                    <key>method</key>
+                    <string>$BITRISE_EXPORT_METHOD</string>
+                    <key>teamID</key>
+                    <string>$BITRISE_TEAM_ID</string>
+                    <key>uploadBitcode</key>
+                    <false/>
+                    <key>compileBitcode</key>
+                    <false/>
+                </dict>
+                </plist>
+      
+      - deploy-to-bitrise-io@2:
+          inputs:
+            - deploy_path: "$BITRISE_DEPLOY_DIR"
+            - is_enable_public_page: "true"
+      
+      - cache-push@2: {}
+
+  deploy:
+    steps:
+      - activate-ssh-key@4:
+          run_if: '{{getenv "SSH_RSA_PRIVATE_KEY" | ne ""}}'
+      
+      - git-clone@6: {}
+      
+      - cache-pull@2: {}
+      
+      - npm@1:
+          inputs:
+            - command: "install"
+            - cwd: "."
+      
+      - cocoapods-install@2:
+          inputs:
+            - source: "https://cdn.cocoapods.org/"
+            - verbose: "false"
+            - cwd: "platforms/ios"
+      
+      - xcode-archive@4:
+          inputs:
+            - project_path: "$BITRISE_PROJECT_PATH"
+            - scheme: "$BITRISE_SCHEME"
+            - configuration: "Release"
+            - archive_path: "$BITRISE_DEPLOY_DIR/App.xcarchive"
+            - export_options_plist_content: |
+                <?xml version="1.0" encoding="UTF-8"?>
+                <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+                <plist version="1.0">
+                <dict>
+                    <key>method</key>
+                    <string>app-store</string>
+                    <key>teamID</key>
+                    <string>$BITRISE_TEAM_ID</string>
+                    <key>uploadBitcode</key>
+                    <true/>
+                    <key>compileBitcode</key>
+                    <true/>
+                </dict>
+                </plist>
+      
+      - deploy-to-itunesconnect-deliver@2:
+          inputs:
+            - apple_id: "$APPLE_ID"
+            - app_password: "$APPLE_APP_PASSWORD"
+            - app_id: "$APPLE_APP_ID"
+            - ipa_path: "$BITRISE_IPA_PATH"
+      
+      - cache-push@2: {}
+
+meta:
+  bitrise.io:
+    stack: osx-xcode-15.x
+    machine_type_id: g2-m1-mac-12core
