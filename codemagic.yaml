@@ -62,7 +62,3 @@ workflows:
         notify:
           success: true
           failure: true
-      slack:
-        webhook_url: $SLACK_WEBHOOK_URL
-        channel: "#builds"
-        notify_on_build_start: true
