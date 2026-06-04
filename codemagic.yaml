@@ -1,0 +1,68 @@
+workflows:
+  ios-workflow:
+    name: iOS Build Workflow
+    max_build_duration: 120
+    environment:
+      vars:
+        BUILD_NUMBER: $BUILD_NUMBER
+        CORDOVA_PATH: "ios-app"
+      xcode: 15.4
+      node: 20.11.0
+    scripts:
+      - name: Install npm dependencies
+        script: |
+          cd $CORDOVA_PATH
+          npm install
+      
+      - name: Install CocoaPods
+        script: |
+          gem install cocoapods
+      
+      - name: Install iOS dependencies
+        script: |
+          cd $CORDOVA_PATH/platforms/ios
+          pod install --repo-update
+      
+      - name: Sync UE5 Assets
+        script: |
+          mkdir -p "$CORDOVA_PATH/platforms/ios/App/Assets/UE5"
+          if [ -d "Build/UE5" ]; then
+            cp -r "Build/UE5/"* "$CORDOVA_PATH/platforms/ios/App/Assets/UE5/" 2>/dev/null || true
+          fi
+      
+      - name: Build iOS Debug
+        script: |
+          cd $CORDOVA_PATH
+          cordova build ios --debug
+      
+      - name: Build iOS Release
+        script: |
+          cd $CORDOVA_PATH
+          cordova build ios --release
+      
+      - name: Export IPA
+        script: |
+          xcodebuild -workspace "$CORDOVA_PATH/platforms/ios/App.xcworkspace" \
+            -scheme "App" \
+            -configuration Release \
+            -archivePath "build/App.xcarchive" \
+            archive
+          
+          xcodebuild -exportArchive \
+            -archivePath "build/App.xcarchive" \
+            -exportPath "build/ipa" \
+            -exportOptionsPlist "$CORDOVA_PATH/platforms/ios/exportOptions.plist"
+    artifacts:
+      - build/ipa/*.ipa
+      - build/App.xcarchive
+    publishing:
+      email:
+        recipients:
+          - build@example.com
+        notify:
+          success: true
+          failure: true
+      slack:
+        webhook_url: $SLACK_WEBHOOK_URL
+        channel: "#builds"
+        notify_on_build_start: true
