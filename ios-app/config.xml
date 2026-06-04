@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='utf-8'?>
 <widget id="com.longevity.game" version="1.0.0" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
-    <name>洪荒长生</name>
+    <name>LongevityGame</name>
     <description>以太白金星李长寿为主角的洪荒修仙游戏</description>
     <author email="support@longevitygame.com" href="https://longevitygame.com">
         Longevity Game Team
