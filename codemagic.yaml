@@ -6,6 +6,8 @@ workflows:
       vars:
         BUILD_NUMBER: $BUILD_NUMBER
         CORDOVA_PATH: ios-app
+        BUNDLE_ID: com.longevitygame.app
+        TEAM_ID: $TEAM_ID
       node: 20.11.0
       cocoapods: default
     scripts:
@@ -16,23 +18,51 @@ workflows:
         script: npm install -g cordova
       
       - name: Add iOS platform
-        script: cd $CORDOVA_PATH && cordova platform add ios || true
+        script: cd $CORDOVA_PATH && cordova platform add ios@6.5.0 || true
       
       - name: Install iOS dependencies
-        script: cd $CORDOVA_PATH/platforms/ios && pod install
+        script: cd $CORDOVA_PATH/platforms/ios && pod install --repo-update
+      
+      - name: Build iOS Debug
+        script: |
+          cd $CORDOVA_PATH
+          cordova build ios --debug
       
       - name: Build iOS Release
-        script: cd $CORDOVA_PATH && cordova build ios --release --device
+        script: |
+          cd $CORDOVA_PATH
+          xcodebuild -workspace platforms/ios/App.xcworkspace \
+            -scheme App \
+            -configuration Release \
+            -sdk iphoneos \
+            -archivePath build/App.xcarchive \
+            archive \
+            CODE_SIGN_STYLE=Automatic \
+            DEVELOPMENT_TEAM=$TEAM_ID \
+            PROVISIONING_PROFILE_SPECIFIER=
+      
+      - name: Create exportOptions.plist
+        script: |
+          cd $CORDOVA_PATH
+          cat > platforms/ios/exportOptions.plist << 'EOF'
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>method</key>
+    <string>development</string>
+    <key>teamID</key>
+    <string>$TEAM_ID</string>
+    <key>signingStyle</key>
+    <string>automatic</string>
+</dict>
+</plist>
+EOF
       
       - name: Export IPA
         script: |
           cd $CORDOVA_PATH
           mkdir -p build/ipa
-          xcodebuild -workspace platforms/ios/App.xcworkspace \
-            -scheme App \
-            -configuration Release \
-            -archivePath build/App.xcarchive \
-            archive
           xcodebuild -exportArchive \
             -archivePath build/App.xcarchive \
             -exportPath build/ipa \
