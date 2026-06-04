@@ -3,10 +3,13 @@ default_step_lib_source: https://github.com/bitrise-io/bitrise-steplib.git
 
 app:
   envs:
-    - BITRISE_PROJECT_PATH: "platforms/ios/App.xcworkspace"
+    - BITRISE_PROJECT_PATH: "Cordova/platforms/ios/App.xcworkspace"
     - BITRISE_SCHEME: "App"
     - BITRISE_EXPORT_METHOD: "development"
     - BITRISE_IOS_CODE_SIGN_IDENTITY: "iPhone Developer"
+    - UE5_PROJECT_PATH: "$BITRISE_SOURCE_DIR/UE5Project/LongevityUE5.uproject"
+    - UE5_PLATFORM: "IOS"
+    - UE5_CONFIG: "Development"
 
 workflows:
   primary:
@@ -21,13 +24,58 @@ workflows:
       - npm@1:
           inputs:
             - command: "install"
-            - cwd: "."
+            - cwd: "ios-app"
+      
+      - script@1:
+          inputs:
+            - content: |
+                # 检查UE5是否可用
+                if [ -d "/Users/vagrant/Epic Games/UE_5.4" ]; then
+                  UE5_PATH="/Users/vagrant/Epic Games/UE_5.4"
+                  echo "UE5 found at: $UE5_PATH"
+                  
+                  # 构建UE5项目
+                  echo "=== 开始构建UE5项目 ==="
+                  "$UE5_PATH/Engine/Binaries/Mac/UnrealEditor" \
+                    "$UE5_PROJECT_PATH" \
+                    -run=cook -targetplatform=$UE5_PLATFORM \
+                    -cookall -mapsonly -skipeditorcontent \
+                    -compress -multiprocess \
+                    -NoP4 -NoHotReload \
+                    -log="ue5-build.log"
+                  
+                  # 打包UE5
+                  "$UE5_PATH/Engine/Binaries/Mac/UnrealEditor" \
+                    "$UE5_PROJECT_PATH" \
+                    -run=BuildCookRun \
+                    -project="$UE5_PROJECT_PATH" \
+                    -noP4 \
+                    -platform=$UE5_PLATFORM \
+                    -config=$UE5_CONFIG \
+                    -cook \
+                    -build \
+                    -stage \
+                    -pak \
+                    -archive \
+                    -archivedirectory="Build/UE5" \
+                    -log="ue5-package.log"
+                  
+                  # 同步资源到Cordova
+                  mkdir -p "ios-app/platforms/ios/App/Assets/UE5"
+                  cp -r "Build/UE5/Payload/LongevityUE5.app" "ios-app/platforms/ios/App/Assets/UE5/" 2>/dev/null || true
+                else
+                  echo "=== UE5未安装，使用预构建资源 ==="
+                  if [ -d "Build/UE5" ]; then
+                    mkdir -p "ios-app/platforms/ios/App/Assets/UE5"
+                    cp -r "Build/UE5/"* "ios-app/platforms/ios/App/Assets/UE5/" 2>/dev/null || true
+                  fi
+                fi
       
       - cocoapods-install@2:
           inputs:
             - source: "https://cdn.cocoapods.org/"
             - verbose: "false"
-            - cwd: "platforms/ios"
+            - cwd: "ios-app/platforms/ios"
       
       - xcode-build-for-test@1:
           inputs:
@@ -65,56 +113,38 @@ workflows:
       
       - cache-push@2: {}
 
-  deploy:
+  ue5-only:
     steps:
       - activate-ssh-key@4:
           run_if: '{{getenv "SSH_RSA_PRIVATE_KEY" | ne ""}}'
       
       - git-clone@6: {}
       
-      - cache-pull@2: {}
-      
-      - npm@1:
+      - script@1:
           inputs:
-            - command: "install"
-            - cwd: "."
+            - content: |
+                # UE5专属构建流程
+                if [ -d "/Users/vagrant/Epic Games/UE_5.4" ]; then
+                  UE5_PATH="/Users/vagrant/Epic Games/UE_5.4"
+                  
+                  "$UE5_PATH/Engine/Binaries/Mac/UnrealEditor" \
+                    "$UE5_PROJECT_PATH" \
+                    -run=BuildCookRun \
+                    -project="$UE5_PROJECT_PATH" \
+                    -noP4 \
+                    -platform=IOS \
+                    -config=Development \
+                    -cook \
+                    -build \
+                    -stage \
+                    -pak \
+                    -archive \
+                    -archivedirectory="Build/UE5"
+                fi
       
-      - cocoapods-install@2:
+      - deploy-to-bitrise-io@2:
           inputs:
-            - source: "https://cdn.cocoapods.org/"
-            - verbose: "false"
-            - cwd: "platforms/ios"
-      
-      - xcode-archive@4:
-          inputs:
-            - project_path: "$BITRISE_PROJECT_PATH"
-            - scheme: "$BITRISE_SCHEME"
-            - configuration: "Release"
-            - archive_path: "$BITRISE_DEPLOY_DIR/App.xcarchive"
-            - export_options_plist_content: |
-                <?xml version="1.0" encoding="UTF-8"?>
-                <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-                <plist version="1.0">
-                <dict>
-                    <key>method</key>
-                    <string>app-store</string>
-                    <key>teamID</key>
-                    <string>$BITRISE_TEAM_ID</string>
-                    <key>uploadBitcode</key>
-                    <true/>
-                    <key>compileBitcode</key>
-                    <true/>
-                </dict>
-                </plist>
-      
-      - deploy-to-itunesconnect-deliver@2:
-          inputs:
-            - apple_id: "$APPLE_ID"
-            - app_password: "$APPLE_APP_PASSWORD"
-            - app_id: "$APPLE_APP_ID"
-            - ipa_path: "$BITRISE_IPA_PATH"
-      
-      - cache-push@2: {}
+            - deploy_path: "Build/UE5"
 
 meta:
   bitrise.io:

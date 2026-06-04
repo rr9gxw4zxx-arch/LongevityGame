@@ -1,0 +1,65 @@
+version: 2.1
+
+orbs:
+  node: circleci/node@5.0.0
+
+jobs:
+  build-ios:
+    macos:
+      xcode: "15.0"
+    environment:
+      BUILD_NUMBER: << pipeline.number >>
+      CORDOVA_PATH: "ios-app"
+    
+    steps:
+      - checkout
+      
+      - run:
+          name: Install Node.js
+          command: |
+            brew install node@20
+            echo 'export PATH="/usr/local/opt/node@20/bin:$PATH"' >> ~/.bash_profile
+            source ~/.bash_profile
+      
+      - run:
+          name: Install npm dependencies
+          command: cd $CORDOVA_PATH && npm install
+      
+      - run:
+          name: Install CocoaPods
+          command: sudo gem install cocoapods
+      
+      - run:
+          name: Install iOS dependencies
+          command: cd $CORDOVA_PATH/platforms/ios && pod install --repo-update
+      
+      - run:
+          name: Sync Pre-built UE5 Assets
+          command: |
+            mkdir -p "$CORDOVA_PATH/platforms/ios/App/Assets/UE5"
+            if [ -d "Build/UE5" ]; then
+              cp -r "Build/UE5/"* "$CORDOVA_PATH/platforms/ios/App/Assets/UE5/" 2>/dev/null || true
+            fi
+      
+      - run:
+          name: Build iOS Debug
+          command: cd $CORDOVA_PATH && cordova build ios --debug
+      
+      - run:
+          name: Build iOS Release
+          command: cd $CORDOVA_PATH && cordova build ios --release
+      
+      - store_artifacts:
+          path: $CORDOVA_PATH/platforms/ios/build/device/
+          destination: ios-build
+
+workflows:
+  version: 2
+  build:
+    jobs:
+      - build-ios:
+          filters:
+            branches:
+              only:
+                - main
+                - develop

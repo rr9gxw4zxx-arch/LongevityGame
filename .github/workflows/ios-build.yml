@@ -1,0 +1,44 @@
+name: iOS Build Pipeline
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: macos-14
+    env:
+      BUILD_NUMBER: ${{ github.run_number }}
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      
+      - name: Install npm dependencies
+        run: cd ios-app && npm install
+      
+      - name: Install CocoaPods
+        run: sudo gem install cocoapods
+      
+      - name: Install iOS dependencies
+        run: cd ios-app/platforms/ios && pod install
+      
+      - name: Build iOS Debug
+        run: cd ios-app && cordova build ios --debug
+      
+      - name: Build iOS Release
+        run: cd ios-app && cordova build ios --release
+      
+      - name: Archive build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: ios-build
+          path: ios-app/platforms/ios/build/device/
+          retention-days: 30
