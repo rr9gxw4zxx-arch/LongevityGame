@@ -32,14 +32,13 @@ workflows:
         script: |
           cd $CORDOVA_PATH
           cordova build ios --debug --emulator
+          find platforms/ios -name "*.app" -type d 2>/dev/null || echo "No app found"
       
       - name: Build iOS Release for Simulator
         script: |
           cd $CORDOVA_PATH
           cordova build ios --release --emulator
-      
-      - name: List build artifacts
-        script: |
-          ls -la $CORDOVA_PATH/platforms/ios/build/emulator/
+          find platforms/ios -name "*.app" -type d
     artifacts:
       - ios-app/platforms/ios/build/emulator/*.app
+      - ios-app/platforms/ios/build/Release-iphonesimulator/*.app
