@@ -5,51 +5,39 @@ workflows:
     environment:
       vars:
         BUILD_NUMBER: $BUILD_NUMBER
-        CORDOVA_PATH: "ios-app"
+        CORDOVA_PATH: ios-app
       node: 20.11.0
+      xcode: 15.4
+      cocoapods: default
     scripts:
       - name: Install npm dependencies
-        script: |
-          cd $CORDOVA_PATH
-          npm install
+        script: cd $CORDOVA_PATH && npm install
       
       - name: Install Cordova CLI
-        script: |
-          npm install -g cordova
+        script: npm install -g cordova
       
       - name: Add iOS platform
-        script: |
-          cd $CORDOVA_PATH
-          if [ ! -d "platforms/ios" ]; then
-            cordova platform add ios
-          fi
-      
-      - name: Install CocoaPods
-        script: |
-          gem install cocoapods
+        script: cd $CORDOVA_PATH && cordova platform add ios || true
       
       - name: Install iOS dependencies
-        script: |
-          cd $CORDOVA_PATH/platforms/ios
-          pod install
+        script: cd $CORDOVA_PATH/platforms/ios && pod install
       
       - name: Build iOS Release
-        script: |
-          cd $CORDOVA_PATH
-          cordova build ios --release
+        script: cd $CORDOVA_PATH && cordova build ios --release --device
       
       - name: Export IPA
         script: |
-          xcodebuild -workspace "$CORDOVA_PATH/platforms/ios/App.xcworkspace" \
-            -scheme "App" \
+          cd $CORDOVA_PATH
+          mkdir -p build/ipa
+          xcodebuild -workspace platforms/ios/App.xcworkspace \
+            -scheme App \
             -configuration Release \
-            -archivePath "build/App.xcarchive" \
+            -archivePath build/App.xcarchive \
             archive
-          
           xcodebuild -exportArchive \
-            -archivePath "build/App.xcarchive" \
-            -exportPath "build/ipa" \
-            -exportOptionsPlist "$CORDOVA_PATH/platforms/ios/exportOptions.plist"
+            -archivePath build/App.xcarchive \
+            -exportPath build/ipa \
+            -exportOptionsPlist platforms/ios/exportOptions.plist
     artifacts:
-      - build/ipa/*.ipa
-      - build/App.xcarchive
+      - ios-app/build/ipa/*.ipa
+      - ios-app/build/App.xcarchive
