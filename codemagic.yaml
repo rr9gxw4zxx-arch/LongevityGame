@@ -6,7 +6,7 @@ workflows:
       vars:
         BUILD_NUMBER: $BUILD_NUMBER
         CORDOVA_PATH: "ios-app"
-      xcode: 15.0
+      xcode: 14.3
       node: 20.11.0
     scripts:
       - name: Install npm dependencies
