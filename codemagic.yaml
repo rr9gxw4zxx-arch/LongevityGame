@@ -13,6 +13,17 @@ workflows:
           cd $CORDOVA_PATH
           npm install
       
+      - name: Install Cordova CLI
+        script: |
+          npm install -g cordova
+      
+      - name: Add iOS platform
+        script: |
+          cd $CORDOVA_PATH
+          if [ ! -d "platforms/ios" ]; then
+            cordova platform add ios
+          fi
+      
       - name: Install CocoaPods
         script: |
           gem install cocoapods
