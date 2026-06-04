@@ -9,23 +9,37 @@ workflows:
       node: 20.11.0
       cocoapods: default
     scripts:
+      - name: Show environment info
+        script: |
+          node --version
+          npm --version
+          xcodebuild -version
+          pod --version
+      
       - name: Install npm dependencies
         script: cd $CORDOVA_PATH && npm install
       
       - name: Install Cordova CLI
-        script: npm install -g cordova
+        script: npm install -g cordova@12.0.0
       
       - name: Add iOS platform
-        script: cd $CORDOVA_PATH && cordova platform add ios || true
+        script: |
+          cd $CORDOVA_PATH
+          cordova platform remove ios || true
+          cordova platform add ios@7.0.1
       
-      - name: Install iOS dependencies
-        script: cd $CORDOVA_PATH/platforms/ios && pod install
+      - name: Show platform info
+        script: cd $CORDOVA_PATH && cordova platform list
       
       - name: Build iOS Debug for Simulator
-        script: cd $CORDOVA_PATH && cordova build ios --debug --emulator
+        script: |
+          cd $CORDOVA_PATH
+          cordova build ios --debug --emulator --target="iPhone 15"
       
       - name: Build iOS Release for Device
-        script: cd $CORDOVA_PATH && cordova build ios --release --device
+        script: |
+          cd $CORDOVA_PATH
+          cordova build ios --release --device
     artifacts:
       - ios-app/platforms/ios/build/device/*.app
       - ios-app/platforms/ios/build/emulator/*.app
