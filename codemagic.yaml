@@ -7,7 +7,6 @@ workflows:
         BUILD_NUMBER: $BUILD_NUMBER
         CORDOVA_PATH: ios-app
       node: 20.11.0
-      xcode: 15.4
       cocoapods: default
     scripts:
       - name: Install npm dependencies
