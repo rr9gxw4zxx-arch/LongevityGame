@@ -7,10 +7,10 @@ workflows:
         BUILD_NUMBER: $BUILD_NUMBER
         CORDOVA_PATH: "ios-app"
       node: 20.11.0
-      cache:
-        cache_paths:
-          - $CORDOVA_PATH/node_modules
-          - ~/.cocoapods/repos
+    cache:
+      cache_paths:
+        - $CORDOVA_PATH/node_modules
+        - ~/.cocoapods/repos
     scripts:
       - name: Install npm dependencies
         script: |
@@ -35,7 +35,7 @@ workflows:
       - name: Install iOS dependencies
         script: |
           cd $CORDOVA_PATH/platforms/ios
-          pod install --repo-update --no-repo-update
+          pod install --no-repo-update
       
       - name: Sync UE5 Assets
         script: |
@@ -47,7 +47,7 @@ workflows:
       - name: Build iOS Release only
         script: |
           cd $CORDOVA_PATH
-          cordova build ios --release --buildConfig build.json
+          cordova build ios --release
       
       - name: Export IPA
         script: |
@@ -56,7 +56,6 @@ workflows:
             -configuration Release \
             -archivePath "build/App.xcarchive" \
             -parallelizeTargets \
-            -jobs 4 \
             archive
           
           xcodebuild -exportArchive \
