@@ -6,6 +6,9 @@ workflows:
       vars:
         BUILD_NUMBER: 1.0.$BUILD_NUMBER
         CORDOVA_PATH: ios-app
+        TEAM_ID: $TEAM_ID
+        PROVISIONING_PROFILE_ID: $PROVISIONING_PROFILE_ID
+        CERTIFICATE_ID: $CERTIFICATE_ID
       node: 20.11.0
       cocoapods: default
     scripts:
@@ -33,9 +36,59 @@ workflows:
           cd $CORDOVA_PATH
           cordova build ios --debug --emulator
       
-      - name: Build iOS Release for Simulator
+      - name: Create build.json for signing
         script: |
           cd $CORDOVA_PATH
-          cordova build ios --release --emulator
+          cat > build.json << 'EOF'
+{
+  "ios": {
+    "debug": {
+      "codeSignIdentity": "iPhone Developer",
+      "provisioningProfile": "$PROVISIONING_PROFILE_ID",
+      "developmentTeam": "$TEAM_ID",
+      "packageType": "development"
+    },
+    "release": {
+      "codeSignIdentity": "iPhone Distribution",
+      "provisioningProfile": "$PROVISIONING_PROFILE_ID",
+      "developmentTeam": "$TEAM_ID",
+      "packageType": "ad-hoc"
+    }
+  }
+}
+EOF
+      
+      - name: Build iOS Release for Device
+        script: |
+          cd $CORDOVA_PATH
+          cordova build ios --release --device --buildConfig=build.json
+      
+      - name: Export IPA
+        script: |
+          cd $CORDOVA_PATH
+          mkdir -p build/ipa
+          xcodebuild -exportArchive \
+            -archivePath platforms/ios/build/device/App.xcarchive \
+            -exportPath build/ipa \
+            -exportOptionsPlist << 'EOF'
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>method</key>
+    <string>ad-hoc</string>
+    <key>teamID</key>
+    <string>$TEAM_ID</string>
+    <key>signingStyle</key>
+    <string>manual</string>
+    <key>provisioningProfiles</key>
+    <dict>
+        <key>com.longevity.game</key>
+        <string>$PROVISIONING_PROFILE_ID</string>
+    </dict>
+</dict>
+</plist>
+EOF
     artifacts:
       - ios-app/platforms/ios/build/emulator/*.app
+      - ios-app/build/ipa/*.ipa
