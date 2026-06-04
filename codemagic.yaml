@@ -28,18 +28,14 @@ workflows:
           cordova platform remove ios || true
           cordova platform add ios@7.0.1
       
-      - name: Show platform info
-        script: cd $CORDOVA_PATH && cordova platform list
-      
       - name: Build iOS Debug for Simulator
         script: |
           cd $CORDOVA_PATH
-          cordova build ios --debug --emulator --target="iPhone 15"
+          cordova build ios --debug --emulator
       
-      - name: Build iOS Release for Device
+      - name: Build iOS Release for Simulator
         script: |
           cd $CORDOVA_PATH
-          cordova build ios --release --device
+          cordova build ios --release --emulator
     artifacts:
-      - ios-app/platforms/ios/build/device/*.app
       - ios-app/platforms/ios/build/emulator/*.app
