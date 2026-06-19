@@ -12,6 +12,7 @@ export class PlayerController {
     init() {}
     
     update(dt) {
+        if (!this.entity || !this.entity.engine) return;
         const input = this.entity.engine.input;
         
         this.direction.x = 0;

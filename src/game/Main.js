@@ -279,27 +279,50 @@ class LongevityGame {
             timestamp: Date.now()
         };
         
-        localStorage.setItem('longevity_save', JSON.stringify(saveData));
-        console.log('游戏已保存！');
+        try {
+            localStorage.setItem('longevity_save', JSON.stringify(saveData));
+            console.log('游戏已保存！');
+        } catch (err) {
+            console.error('Failed to save game:', err);
+        }
         this.hud.toggleMenu();
     }
     
     loadGame() {
-        const saveData = localStorage.getItem('longevity_save');
-        if (saveData) {
-            const data = JSON.parse(saveData);
-            this.player.x = data.player.x;
-            this.player.y = data.player.y;
-            this.player.level = data.player.level;
-            this.player.hp = data.player.hp;
-            this.player.maxHp = data.player.maxHp;
-            this.player.attack = data.player.attack;
-            this.player.defense = data.player.defense;
-            this.player.exp = data.player.exp;
-            this.player.gold = data.player.gold;
-            this.player.realm = data.player.realm;
-            console.log('游戏已加载！');
+        let saveData;
+        try {
+            saveData = localStorage.getItem('longevity_save');
+        } catch (err) {
+            console.error('Failed to access localStorage:', err);
+            return;
         }
+        if (!saveData) return;
+
+        let data;
+        try {
+            data = JSON.parse(saveData);
+        } catch (err) {
+            console.error('Failed to parse save data:', err);
+            return;
+        }
+
+        if (!data.player) {
+            console.error('Save data missing player information');
+            return;
+        }
+
+        const p = data.player;
+        this.player.x = p.x ?? this.player.x;
+        this.player.y = p.y ?? this.player.y;
+        this.player.level = p.level ?? this.player.level;
+        this.player.hp = p.hp ?? this.player.hp;
+        this.player.maxHp = p.maxHp ?? this.player.maxHp;
+        this.player.attack = p.attack ?? this.player.attack;
+        this.player.defense = p.defense ?? this.player.defense;
+        this.player.exp = p.exp ?? this.player.exp;
+        this.player.gold = p.gold ?? this.player.gold;
+        this.player.realm = p.realm ?? this.player.realm;
+        console.log('游戏已加载！');
     }
     
     quitGame() {
@@ -310,8 +333,12 @@ class LongevityGame {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-    const game = new LongevityGame();
-    game.init();
+    try {
+        const game = new LongevityGame();
+        game.init();
+    } catch (err) {
+        console.error('Failed to initialize game:', err);
+    }
 });
 
 document.addEventListener('deviceready', () => {

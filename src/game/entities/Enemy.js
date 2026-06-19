@@ -2,17 +2,20 @@ import { Entity } from '../../engine/Entity.js';
 
 export class Enemy extends Entity {
     constructor(data, x, y) {
+        if (!data) {
+            throw new Error('Enemy: data is required');
+        }
         super(x, y, 40, 40);
         
         this.id = data.id;
-        this.name = data.name;
-        this.realm = data.realm;
-        this.maxHp = data.hp;
-        this.hp = data.hp;
-        this.attack = data.attack;
-        this.defense = data.defense;
-        this.exp = data.exp;
-        this.gold = data.gold;
+        this.name = data.name || 'Unknown';
+        this.realm = data.realm || 1;
+        this.maxHp = data.hp || 50;
+        this.hp = data.hp || 50;
+        this.attack = data.attack || 10;
+        this.defense = data.defense || 2;
+        this.exp = data.exp || 0;
+        this.gold = data.gold || 0;
         this.isBoss = data.isBoss || false;
         
         this.alive = true;
