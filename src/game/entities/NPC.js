@@ -2,13 +2,16 @@ import { Entity } from '../../engine/Entity.js';
 
 export class NPC extends Entity {
     constructor(data) {
+        if (!data || !data.position) {
+            throw new Error('NPC: data with position is required');
+        }
         super(data.position.x, data.position.y, 40, 56);
         
         this.id = data.id;
-        this.name = data.name;
-        this.role = data.role;
-        this.realm = data.realm;
-        this.dialogue = data.dialogue;
+        this.name = data.name || 'Unknown';
+        this.role = data.role || '';
+        this.realm = data.realm || 1;
+        this.dialogue = data.dialogue || [];
         this.currentDialogueIndex = 0;
         
         this.interacting = false;

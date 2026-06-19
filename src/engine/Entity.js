@@ -14,6 +14,10 @@ export class Entity {
     }
     
     addComponent(component) {
+        if (!component || !component.name) {
+            console.error('Entity.addComponent: invalid component (missing or no name)');
+            return;
+        }
         this.components[component.name] = component;
         component.entity = this;
         if (component.init) {
@@ -77,12 +81,14 @@ export class Entity {
     }
     
     distanceTo(other) {
+        if (!other) return Infinity;
         const dx = this.getCenterX() - other.getCenterX();
         const dy = this.getCenterY() - other.getCenterY();
         return Math.sqrt(dx * dx + dy * dy);
     }
     
     intersects(other) {
+        if (!other) return false;
         return this.x < other.x + other.width &&
                this.x + this.width > other.x &&
                this.y < other.y + other.height &&

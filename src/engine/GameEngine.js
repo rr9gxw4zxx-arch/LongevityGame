@@ -1,7 +1,13 @@
 export class GameEngine {
     constructor(canvasId) {
         this.canvas = document.getElementById(canvasId);
+        if (!this.canvas) {
+            throw new Error(`GameEngine: canvas element '${canvasId}' not found`);
+        }
         this.ctx = this.canvas.getContext('2d');
+        if (!this.ctx) {
+            throw new Error('GameEngine: failed to get 2d rendering context');
+        }
         this.width = 0;
         this.height = 0;
         
@@ -331,8 +337,12 @@ export class GameEngine {
             this.deltaTime = Math.min(elapsed / 1000, 0.1);
             this.lastTime = currentTime;
             
-            this.update();
-            this.render();
+            try {
+                this.update();
+                this.render();
+            } catch (err) {
+                console.error('GameEngine: error in game loop:', err);
+            }
         }
         
         requestAnimationFrame(() => this.gameLoop());
@@ -381,7 +391,13 @@ export class GameEngine {
     emit(eventName, data) {
         const handlers = this.eventHandlers?.[eventName];
         if (handlers) {
-            handlers.forEach(handler => handler(data));
+            handlers.forEach(handler => {
+                try {
+                    handler(data);
+                } catch (err) {
+                    console.error(`GameEngine: error in '${eventName}' handler:`, err);
+                }
+            });
         }
     }
     

@@ -22,6 +22,10 @@ export class SpriteRenderer {
             this.image.onload = () => {
                 this.loaded = true;
             };
+            this.image.onerror = (err) => {
+                console.error(`SpriteRenderer: failed to load image '${this.imagePath}'`, err);
+                this.image = null;
+            };
             this.image.src = this.imagePath;
         }
     }
