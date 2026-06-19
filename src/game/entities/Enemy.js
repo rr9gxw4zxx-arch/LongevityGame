@@ -1,4 +1,5 @@
 import { Entity } from '../../engine/Entity.js';
+import { drawHealthBar } from '../../utils/rendering.js';
 
 export class Enemy extends Entity {
     constructor(data, x, y) {
@@ -103,15 +104,7 @@ export class Enemy extends Entity {
     }
     
     drawHealthBar(ctx) {
-        const hpPercent = this.hp / this.maxHp;
-        const barWidth = this.width;
-        const barHeight = 4;
-        
-        ctx.fillStyle = '#333';
-        ctx.fillRect(this.x, this.y - 10, barWidth, barHeight);
-        
-        ctx.fillStyle = hpPercent > 0.5 ? '#00ff00' : hpPercent > 0.25 ? '#ffff00' : '#ff0000';
-        ctx.fillRect(this.x, this.y - 10, barWidth * hpPercent, barHeight);
+        drawHealthBar(ctx, this.x, this.y - 10, this.width, 4, this.hp / this.maxHp);
     }
     
     takeDamage(amount) {

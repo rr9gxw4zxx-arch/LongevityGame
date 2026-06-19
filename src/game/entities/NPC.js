@@ -1,4 +1,5 @@
 import { Entity } from '../../engine/Entity.js';
+import { drawOutlinedText } from '../../utils/rendering.js';
 
 export class NPC extends Entity {
     constructor(data) {
@@ -62,22 +63,10 @@ export class NPC extends Entity {
     }
     
     drawName(ctx) {
-        ctx.save();
-        ctx.font = '12px SimHei';
-        ctx.fillStyle = '#ffffff';
-        ctx.strokeStyle = '#000';
-        ctx.lineWidth = 2;
-        ctx.textAlign = 'center';
+        const centerX = this.x + this.width / 2;
         
-        ctx.strokeText(this.name, this.x + this.width / 2, this.y - 5);
-        ctx.fillText(this.name, this.x + this.width / 2, this.y - 5);
-        
-        ctx.font = '10px SimHei';
-        ctx.fillStyle = '#ffd700';
-        ctx.strokeText(this.role, this.x + this.width / 2, this.y + 55);
-        ctx.fillText(this.role, this.x + this.width / 2, this.y + 55);
-        
-        ctx.restore();
+        drawOutlinedText(ctx, this.name, centerX, this.y - 5);
+        drawOutlinedText(ctx, this.role, centerX, this.y + 55, { font: '10px SimHei', fillStyle: '#ffd700' });
     }
     
     drawDialogue(ctx) {

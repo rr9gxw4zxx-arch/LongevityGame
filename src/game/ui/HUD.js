@@ -1,3 +1,5 @@
+import { drawHealthBar } from '../../utils/rendering.js';
+
 export class HUD {
     constructor(engine) {
         this.engine = engine;
@@ -31,12 +33,7 @@ export class HUD {
         const x = 20;
         const y = 20;
         
-        ctx.fillStyle = '#333';
-        ctx.fillRect(x, y, barWidth, barHeight);
-        
-        const hpPercent = this.player.hp / this.player.maxHp;
-        ctx.fillStyle = hpPercent > 0.5 ? '#00ff00' : hpPercent > 0.25 ? '#ffff00' : '#ff0000';
-        ctx.fillRect(x, y, barWidth * hpPercent, barHeight);
+        drawHealthBar(ctx, x, y, barWidth, barHeight, this.player.hp / this.player.maxHp);
         
         ctx.fillStyle = '#ffffff';
         ctx.font = '12px SimHei';

@@ -1,6 +1,8 @@
 import { Entity } from '../../engine/Entity.js';
 import { SpriteRenderer } from '../../engine/components/SpriteRenderer.js';
 import { PlayerController } from '../../engine/components/PlayerController.js';
+import { drawOutlinedText } from '../../utils/rendering.js';
+import { clamp } from '../../utils/math.js';
 
 export class Player extends Entity {
     constructor(x, y) {
@@ -37,8 +39,8 @@ export class Player extends Entity {
     clampPosition() {
         const map = this.engine.systems.find(s => s.constructor.name === 'MapSystem');
         if (map) {
-            this.x = Math.max(0, Math.min(this.x, map.mapWidth - this.width));
-            this.y = Math.max(0, Math.min(this.y, map.mapHeight - this.height));
+            this.x = clamp(this.x, 0, map.mapWidth - this.width);
+            this.y = clamp(this.y, 0, map.mapHeight - this.height);
         }
     }
     
@@ -79,25 +81,11 @@ export class Player extends Entity {
     }
     
     drawName(ctx) {
-        ctx.save();
-        ctx.font = '14px SimHei';
-        ctx.fillStyle = '#ffd700';
-        ctx.strokeStyle = '#000';
-        ctx.lineWidth = 2;
-        ctx.textAlign = 'center';
-        
         const nameX = this.x + this.width / 2;
         const nameY = this.y - 8;
         
-        ctx.strokeText(this.name, nameX, nameY);
-        ctx.fillText(this.name, nameX, nameY);
-        
-        ctx.font = '10px SimHei';
-        ctx.fillStyle = '#00ff00';
-        ctx.strokeText(this.title, nameX, nameY + 14);
-        ctx.fillText(this.title, nameX, nameY + 14);
-        
-        ctx.restore();
+        drawOutlinedText(ctx, this.name, nameX, nameY, { font: '14px SimHei', fillStyle: '#ffd700' });
+        drawOutlinedText(ctx, this.title, nameX, nameY + 14, { font: '10px SimHei', fillStyle: '#00ff00' });
     }
     
     addSkill(skill) {
@@ -113,7 +101,7 @@ export class Player extends Entity {
     }
     
     heal(amount) {
-        this.hp = Math.min(this.hp + amount, this.maxHp);
+        this.hp = clamp(this.hp + amount, 0, this.maxHp);
     }
     
     onDeath() {

@@ -1,4 +1,5 @@
 import { GameEngine } from '../engine/GameEngine.js';
+import { isMobileDevice } from '../utils/platform.js';
 import { MapSystem } from './systems/MapSystem.js';
 import { BattleSystem } from './systems/BattleSystem.js';
 import { Player } from './entities/Player.js';
@@ -22,7 +23,7 @@ class LongevityGame {
     }
     
     init() {
-        this.isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+        this.isMobile = isMobileDevice();
         
         this.engine = new GameEngine('gameCanvas');
         this.isMobile = this.engine.isMobile;

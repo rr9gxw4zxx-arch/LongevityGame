@@ -1,3 +1,5 @@
+import { magnitude } from '../utils/math.js';
+
 export class Entity {
     constructor(x = 0, y = 0, width = 32, height = 32) {
         this.x = x;
@@ -79,7 +81,7 @@ export class Entity {
     distanceTo(other) {
         const dx = this.getCenterX() - other.getCenterX();
         const dy = this.getCenterY() - other.getCenterY();
-        return Math.sqrt(dx * dx + dy * dy);
+        return magnitude(dx, dy);
     }
     
     intersects(other) {
