@@ -1,0 +1,17 @@
+[
+    { "Name": "Realm_1",  "RealmId": 1,  "RealmName": "炼气期",   "DisplayColor": "(R=0.53,G=0.53,B=0.53,A=1)", "StatMultiplier": 1.0,    "ExperienceRequired": 100 },
+    { "Name": "Realm_2",  "RealmId": 2,  "RealmName": "筑基期",   "DisplayColor": "(R=0,G=1,B=0,A=1)",          "StatMultiplier": 1.5,    "ExperienceRequired": 300 },
+    { "Name": "Realm_3",  "RealmId": 3,  "RealmName": "金丹期",   "DisplayColor": "(R=1,G=0.84,B=0,A=1)",       "StatMultiplier": 2.0,    "ExperienceRequired": 600 },
+    { "Name": "Realm_4",  "RealmId": 4,  "RealmName": "元婴期",   "DisplayColor": "(R=1,G=0.41,B=0.71,A=1)",    "StatMultiplier": 3.0,    "ExperienceRequired": 1000 },
+    { "Name": "Realm_5",  "RealmId": 5,  "RealmName": "化神期",   "DisplayColor": "(R=0,G=0.75,B=1,A=1)",       "StatMultiplier": 4.0,    "ExperienceRequired": 2000 },
+    { "Name": "Realm_6",  "RealmId": 6,  "RealmName": "炼虚期",   "DisplayColor": "(R=0.6,G=0.2,B=0.8,A=1)",    "StatMultiplier": 5.0,    "ExperienceRequired": 4000 },
+    { "Name": "Realm_7",  "RealmId": 7,  "RealmName": "合体期",   "DisplayColor": "(R=1,G=0.27,B=0,A=1)",       "StatMultiplier": 6.0,    "ExperienceRequired": 8000 },
+    { "Name": "Realm_8",  "RealmId": 8,  "RealmName": "大乘期",   "DisplayColor": "(R=1,G=1,B=0,A=1)",          "StatMultiplier": 8.0,    "ExperienceRequired": 15000 },
+    { "Name": "Realm_9",  "RealmId": 9,  "RealmName": "渡劫期",   "DisplayColor": "(R=1,G=0,B=0,A=1)",          "StatMultiplier": 10.0,   "ExperienceRequired": 30000 },
+    { "Name": "Realm_10", "RealmId": 10, "RealmName": "真仙",     "DisplayColor": "(R=1,G=1,B=1,A=1)",          "StatMultiplier": 15.0,   "ExperienceRequired": 60000 },
+    { "Name": "Realm_11", "RealmId": 11, "RealmName": "金仙",     "DisplayColor": "(R=1,G=0.84,B=0,A=1)",       "StatMultiplier": 20.0,   "ExperienceRequired": 120000 },
+    { "Name": "Realm_12", "RealmId": 12, "RealmName": "太乙金仙", "DisplayColor": "(R=0,G=1,B=1,A=1)",          "StatMultiplier": 30.0,   "ExperienceRequired": 250000 },
+    { "Name": "Realm_13", "RealmId": 13, "RealmName": "大罗金仙", "DisplayColor": "(R=1,G=0,B=1,A=1)",          "StatMultiplier": 50.0,   "ExperienceRequired": 500000 },
+    { "Name": "Realm_14", "RealmId": 14, "RealmName": "准圣",     "DisplayColor": "(R=0.55,G=0.27,B=0.07,A=1)", "StatMultiplier": 100.0,  "ExperienceRequired": 1000000 },
+    { "Name": "Realm_15", "RealmId": 15, "RealmName": "圣人",     "DisplayColor": "(R=1,G=0.84,B=0,A=1)",       "StatMultiplier": 1000.0, "ExperienceRequired": 9999999 }
+]

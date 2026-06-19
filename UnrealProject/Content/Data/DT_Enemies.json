@@ -1,0 +1,58 @@
+[
+    {
+        "Name": "demon_spirit",
+        "EnemyId": "demon_spirit",
+        "EnemyName": "游魂",
+        "Realm": 2,
+        "MaxHP": 50,
+        "Attack": 10,
+        "Defense": 2,
+        "ExperienceReward": 20,
+        "GoldReward": 10,
+        "bIsBoss": false,
+        "PatrolSpeed": 150,
+        "ChaseSpeed": 250
+    },
+    {
+        "Name": "ghost",
+        "EnemyId": "ghost",
+        "EnemyName": "恶鬼",
+        "Realm": 3,
+        "MaxHP": 80,
+        "Attack": 15,
+        "Defense": 5,
+        "ExperienceReward": 35,
+        "GoldReward": 20,
+        "bIsBoss": false,
+        "PatrolSpeed": 180,
+        "ChaseSpeed": 300
+    },
+    {
+        "Name": "demon_beast",
+        "EnemyId": "demon_beast",
+        "EnemyName": "妖兽",
+        "Realm": 4,
+        "MaxHP": 150,
+        "Attack": 25,
+        "Defense": 10,
+        "ExperienceReward": 60,
+        "GoldReward": 40,
+        "bIsBoss": false,
+        "PatrolSpeed": 200,
+        "ChaseSpeed": 350
+    },
+    {
+        "Name": "boss_dragon",
+        "EnemyId": "boss_dragon",
+        "EnemyName": "孽龙",
+        "Realm": 7,
+        "MaxHP": 1000,
+        "Attack": 80,
+        "Defense": 30,
+        "ExperienceReward": 500,
+        "GoldReward": 500,
+        "bIsBoss": true,
+        "PatrolSpeed": 250,
+        "ChaseSpeed": 500
+    }
+]

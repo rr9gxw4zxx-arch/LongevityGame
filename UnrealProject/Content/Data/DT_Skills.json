@@ -1,0 +1,66 @@
+[
+    {
+        "Name": "longevity",
+        "SkillId": "longevity",
+        "SkillName": "长生大道",
+        "Description": "李长寿的核心功法，修炼此功可长生不老",
+        "IconPath": "/Game/UI/Icons/SK_Longevity",
+        "Damage": 0,
+        "Cooldown": 0,
+        "Effect": {
+            "EffectType": "buff",
+            "AffectedStat": "maxHp",
+            "Value": 100,
+            "Duration": 0
+        },
+        "RequiredRealm": 1
+    },
+    {
+        "Name": "taiji",
+        "SkillId": "taiji",
+        "SkillName": "太极图",
+        "Description": "先天至宝，可演化阴阳，镇压气运",
+        "IconPath": "/Game/UI/Icons/SK_Taiji",
+        "Damage": 50,
+        "Cooldown": 5.0,
+        "Effect": {
+            "EffectType": "None",
+            "AffectedStat": "None",
+            "Value": 0,
+            "Duration": 0
+        },
+        "RequiredRealm": 3
+    },
+    {
+        "Name": "qingping",
+        "SkillId": "qingping",
+        "SkillName": "青萍剑",
+        "Description": "先天灵宝，杀伐无双",
+        "IconPath": "/Game/UI/Icons/SK_Qingping",
+        "Damage": 30,
+        "Cooldown": 2.0,
+        "Effect": {
+            "EffectType": "None",
+            "AffectedStat": "None",
+            "Value": 0,
+            "Duration": 0
+        },
+        "RequiredRealm": 2
+    },
+    {
+        "Name": "zhenwu",
+        "SkillId": "zhenwu",
+        "SkillName": "真武大帝法身",
+        "Description": "召唤真武大帝法身助战",
+        "IconPath": "/Game/UI/Icons/SK_Zhenwu",
+        "Damage": 100,
+        "Cooldown": 15.0,
+        "Effect": {
+            "EffectType": "None",
+            "AffectedStat": "None",
+            "Value": 0,
+            "Duration": 0
+        },
+        "RequiredRealm": 5
+    }
+]
