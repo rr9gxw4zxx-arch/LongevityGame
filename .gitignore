@@ -1,2 +1,32 @@
 node_modules/
 coverage/
+build/
+.env
+.env.*
+*.pem
+*.key
+*.p12
+*.mobileprovision
+*.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# iOS build artifacts
+ios-app/platforms/
+ios-app/plugins/
+ios-app/node_modules/
+
+# Cordova
+platforms/
+plugins/
+
+# Build output
+Build/
+*.ipa
+*.app
+*.xcarchive

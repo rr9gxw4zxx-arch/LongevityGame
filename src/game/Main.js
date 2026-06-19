@@ -286,20 +286,37 @@ class LongevityGame {
     
     loadGame() {
         const saveData = localStorage.getItem('longevity_save');
-        if (saveData) {
-            const data = JSON.parse(saveData);
-            this.player.x = data.player.x;
-            this.player.y = data.player.y;
-            this.player.level = data.player.level;
-            this.player.hp = data.player.hp;
-            this.player.maxHp = data.player.maxHp;
-            this.player.attack = data.player.attack;
-            this.player.defense = data.player.defense;
-            this.player.exp = data.player.exp;
-            this.player.gold = data.player.gold;
-            this.player.realm = data.player.realm;
-            console.log('游戏已加载！');
+        if (!saveData) return;
+
+        let data;
+        try {
+            data = JSON.parse(saveData);
+        } catch (e) {
+            localStorage.removeItem('longevity_save');
+            return;
         }
+
+        if (!data || !data.player || typeof data.player !== 'object') return;
+
+        const p = data.player;
+        const isFiniteNum = (v) => typeof v === 'number' && isFinite(v);
+        if (!isFiniteNum(p.x) || !isFiniteNum(p.y) || !isFiniteNum(p.level) ||
+            !isFiniteNum(p.hp) || !isFiniteNum(p.maxHp) || !isFiniteNum(p.attack) ||
+            !isFiniteNum(p.defense) || !isFiniteNum(p.exp) || !isFiniteNum(p.gold) ||
+            !isFiniteNum(p.realm)) {
+            return;
+        }
+
+        this.player.x = p.x;
+        this.player.y = p.y;
+        this.player.level = p.level;
+        this.player.hp = p.hp;
+        this.player.maxHp = p.maxHp;
+        this.player.attack = p.attack;
+        this.player.defense = p.defense;
+        this.player.exp = p.exp;
+        this.player.gold = p.gold;
+        this.player.realm = p.realm;
     }
     
     quitGame() {
