@@ -1,3 +1,5 @@
+import { magnitude } from '../../utils/math.js';
+
 export class PlayerController {
     constructor() {
         this.name = 'PlayerController';
@@ -29,7 +31,7 @@ export class PlayerController {
         
         this.isSprinting = input.keys['ShiftLeft'] || input.keys['ShiftRight'];
         
-        const length = Math.sqrt(this.direction.x * this.direction.x + this.direction.y * this.direction.y);
+        const length = magnitude(this.direction.x, this.direction.y);
         if (length > 0) {
             this.direction.x /= length;
             this.direction.y /= length;

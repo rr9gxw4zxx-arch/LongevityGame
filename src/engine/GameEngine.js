@@ -1,3 +1,6 @@
+import { isMobileDevice } from '../utils/platform.js';
+import { magnitude } from '../utils/math.js';
+
 export class GameEngine {
     constructor(canvasId) {
         this.canvas = document.getElementById(canvasId);
@@ -16,7 +19,7 @@ export class GameEngine {
         this.fps = 60;
         this.frameInterval = 1000 / 60;
         
-        this.isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+        this.isMobile = isMobileDevice();
         this.useWebGL = false;
         
         this.input = {
@@ -254,7 +257,7 @@ export class GameEngine {
             const touch = e.touches[0];
             const dx = touch.clientX - this.input.joystick.startX;
             const dy = touch.clientY - this.input.joystick.startY;
-            const distance = Math.sqrt(dx * dx + dy * dy);
+            const distance = magnitude(dx, dy);
             const radius = this.input.joystick.radius;
             
             if (distance > radius) {

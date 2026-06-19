@@ -1,3 +1,5 @@
+import { drawHealthBar } from '../../utils/rendering.js';
+
 export class BattleSystem {
     constructor() {
         this.engine = null;
@@ -49,12 +51,7 @@ export class BattleSystem {
         const damage = this.calculateDamage(this.player, enemy);
         enemy.hp -= damage;
         this.addLog(`\u4F60\u5BF9 ${enemy.name} \u9020\u6210 ${Math.floor(damage)} \u788E\u4F24\u5BB3`);
-        
-        if (enemy.hp <= 0) {
-            enemy.alive = false;
-            this.addLog(`\u51FB\u8D25\u4E86 ${enemy.name} \uFF01`);
-            this.rewardPlayer(enemy);
-        }
+        this.checkEnemyDefeated(enemy);
     }
     
     calculateDamage(attacker, defender) {
@@ -82,12 +79,7 @@ export class BattleSystem {
         if (damage > 0 && this.currentTarget) {
             this.currentTarget.hp -= damage;
             this.addLog(`${skill.icon} ${skill.name} \u5BF9 ${this.currentTarget.name} \u9020\u6210 ${damage} \u788E\u4F24\u5BB3`);
-            
-            if (this.currentTarget.hp <= 0) {
-                this.currentTarget.alive = false;
-                this.addLog(`\u51FB\u8D25\u4E86 ${this.currentTarget.name} \uFF01`);
-                this.rewardPlayer(this.currentTarget);
-            }
+            this.checkEnemyDefeated(this.currentTarget);
         }
         
         if (skill.effect) {
@@ -134,6 +126,14 @@ export class BattleSystem {
         }
     }
     
+    checkEnemyDefeated(enemy) {
+        if (enemy.hp <= 0) {
+            enemy.alive = false;
+            this.addLog(`\u51FB\u8D25\u4E86 ${enemy.name} \uFF01`);
+            this.rewardPlayer(enemy);
+        }
+    }
+    
     endBattle() {
         this.isInBattle = false;
         this.enemies = [];
@@ -168,20 +168,15 @@ export class BattleSystem {
         });
         
         if (this.currentTarget && this.currentTarget.alive) {
-            const hpPercent = this.currentTarget.hp / this.currentTarget.maxHp;
             const barWidth = 200;
-            const barHeight = 15;
+            const barX = this.engine.width - barWidth - 20;
             
-            ctx.fillStyle = '#333';
-            ctx.fillRect(this.engine.width - barWidth - 20, 20, barWidth, barHeight);
-            
-            ctx.fillStyle = hpPercent > 0.5 ? '#00ff00' : hpPercent > 0.25 ? '#ffff00' : '#ff0000';
-            ctx.fillRect(this.engine.width - barWidth - 20, 20, barWidth * hpPercent, barHeight);
+            drawHealthBar(ctx, barX, 20, barWidth, 15, this.currentTarget.hp / this.currentTarget.maxHp);
             
             ctx.fillStyle = '#ffffff';
             ctx.font = '12px SimHei';
             ctx.fillText(`${this.currentTarget.name}: ${Math.floor(this.currentTarget.hp)}/${this.currentTarget.maxHp}`, 
-                this.engine.width - barWidth - 20, 45);
+                barX, 45);
         }
     }
 }
