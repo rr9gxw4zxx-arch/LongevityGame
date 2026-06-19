@@ -6,6 +6,8 @@
   "scripts": {
     "start": "npx serve .",
     "build": "mkdir -p build && cp -r index.html src build/",
+    "test": "jest",
+    "test:coverage": "jest --coverage",
     "cordova:init": "cordova create ios-app com.longevity.game LongevityGame",
     "ios:assets": "bash Scripts/generate-ios-assets.sh",
     "ios:sync": "bash Scripts/sync-ios-www.sh",
@@ -13,7 +15,19 @@
     "ios:device": "cd ios-app && cordova run ios --device",
     "cordova:build": "npm run ios:build"
   },
-  "keywords": ["game", "honghuang", "修仙", "洪荒"],
+  "keywords": [
+    "game",
+    "honghuang",
+    "修仙",
+    "洪荒"
+  ],
   "author": "LongevityGame Team",
-  "license": "MIT"
+  "license": "MIT",
+  "devDependencies": {
+    "@babel/core": "^7.29.7",
+    "@babel/preset-env": "^7.29.7",
+    "@jest/globals": "^30.4.1",
+    "babel-jest": "^30.4.1",
+    "jest": "^30.4.2"
+  }
 }
