@@ -1,0 +1,41 @@
+[
+    {
+        "Name": "master",
+        "NPCId": "master",
+        "NPCName": "玉鼎真人",
+        "Role": "师父",
+        "Realm": 13,
+        "DialogueLines": [
+            "长寿，你天资聪颖，好好修行。",
+            "山下近日不太平，你且谨慎行事。",
+            "为师观你机缘深厚，他日必成大器。"
+        ],
+        "SpawnPosition": { "X": 100000, "Y": 100000, "Z": 0 }
+    },
+    {
+        "Name": "junior_sister",
+        "NPCId": "junior_sister",
+        "NPCName": "云霄",
+        "Role": "师姐",
+        "Realm": 8,
+        "DialogueLines": [
+            "师兄，你又在研究什么奇奇怪怪的法术？",
+            "山下新开了一家点心铺，要不要一起去尝尝？",
+            "听说东海那边出现了异动，师兄要小心。"
+        ],
+        "SpawnPosition": { "X": 112500, "Y": 105000, "Z": 0 }
+    },
+    {
+        "Name": "senior_brother",
+        "NPCId": "senior_brother",
+        "NPCName": "杨戬",
+        "Role": "师兄",
+        "Realm": 11,
+        "DialogueLines": [
+            "师弟，来切磋一番？",
+            "你的谨慎之道，颇有几分道理。",
+            "天庭那边好像有动静..."
+        ],
+        "SpawnPosition": { "X": 87500, "Y": 112500, "Z": 0 }
+    }
+]
